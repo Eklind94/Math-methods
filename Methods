@@ -1,0 +1,180 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+//Enter numbers and finish with q 
+
+public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        int oddNumber = 0,oddIndex = 0;
+        int input = 1;
+        ArrayList<Integer> inputList1 = new ArrayList<>();
+        ArrayList<Integer> inputList2 = new ArrayList<>();
+
+        System.out.println("----------------------------------");
+        System.out.println("# Test of area and volume methods");
+        System.out.println("----------------------------------");
+
+        //Take user input
+        System.out.print(">");
+        while (input > -2) {
+            input = input();
+            if (input > -1) {
+                inputList1.add(input);
+            }
+        }
+        System.out.println(inputList1); // shows saved user input in Arraylist
+
+        //Checks if the number of inputs are uneven. Separates the last number.
+        if ( inputList1.size() % 2 != 0) {
+            int index = inputList1.size() - 1;
+            oddNumber = inputList1.get(index);
+            inputList1.remove(index);
+            oddIndex++;
+        }
+
+        //Print equations
+    for (int i = 0; i < inputList1.size(); i++){
+        if ( i % 2 == 0){
+            System.out.printf(" r = %d h = %d %n",inputList1.get(i),inputList1.get(i+1));
+            System.out.printf(" Circle Area: %.2f%n",area(inputList1.get(i)));
+            System.out.printf(" Cone Area: %.2f%n",area(inputList1.get(i),inputList1.get(i+1)));
+            System.out.printf(" Cone Volume : %.2f%n",volume(inputList1.get(i),inputList1.get(i+1)));
+            System.out.println();
+            }
+        }
+        if (oddIndex > 0){
+            System.out.printf(" Last number: %d%n",oddNumber);
+            System.out.printf(" Circle Area: %.2f%n",area(oddNumber));
+        }
+
+
+    //Part 2
+        System.out.println("----------------------------------");
+        System.out.println("# Test of the fractional methods");
+        System.out.println("----------------------------------");
+
+        //Take user input & reset variabels
+        System.out.print(">");
+        input = 1;
+        oddIndex = 0;
+        while (input > -2) {
+            input = input();
+            if (input > -1) {
+                inputList2.add(input);
+            }
+        }
+        System.out.println(inputList2); // shows saved user input in Arraylist
+        //Checks if the number of inputs are uneven. Separates the last number.
+        if ( inputList2.size() % 2 != 0) {
+            int index = inputList2.size() - 1;
+            oddNumber = inputList2.get(index);
+            inputList2.remove(index);
+            oddIndex++;
+        }
+
+        //Print equations
+        for (int i = 0; i < inputList2.size(); i++){
+            if ( i % 2 == 0){
+                System.out.printf("%s/%s = ",inputList2.get(i),inputList2.get(i+1));
+                printFraction(fraction(inputList2.get(i),inputList2.get(i+1)));
+            }
+        }
+        if (oddIndex > 0){
+            System.out.printf(" Odd number: %d%n",oddNumber);
+        }
+    }
+
+
+    public static double area(int radius) {
+        return Math.PI * radius * radius;
+    }
+
+    public static double area(int radius, int height) {
+        return Math.PI * radius * pythagoras(radius, height);
+    }
+
+    public static double pythagoras(int sideA, int sideB) {
+        return Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
+    }
+
+    public static double volume(int radius, int height) {
+        return (Math.PI * radius * radius * height) / 3;
+    }
+
+    public static int[] fraction(int numerator, int denominator) {
+        if (denominator == 0) {
+            return null;
+        } else if (numerator == 0) {
+            return new int[]{0, 0, 0};
+        } else {
+            int sign = (numerator < 0) ^ (denominator < 0) ? -1 : 1;
+            numerator = Math.abs(numerator);
+            denominator = Math.abs(denominator);
+            int integerPart = numerator / denominator;
+            numerator %= denominator;
+            int gcd = findGCD(numerator, denominator);
+            numerator /= gcd;
+            denominator /= gcd;
+            int[] result = new int[3];
+            result[0] = sign * integerPart;
+            result[1] = sign * numerator;
+            result[2] = denominator;
+            return result;
+        }
+    }
+
+    private static int findGCD(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    public static void printFraction(int[] parts) {
+        if (parts == null) {
+            System.out.println("Error");
+            return;
+        }
+
+        int firstInt = parts.length > 0 ? parts[0] : 0;
+        int secondInt = parts.length > 1 ? parts[1] : 0;
+        int thirdInt = parts.length > 2 && parts[2] != 0 ? parts[2] : 1;
+
+        if (firstInt == 0 && secondInt == 0) {
+            System.out.println(0);
+            return;
+        }
+
+        if (firstInt != 0) {
+            System.out.print(firstInt + " ");
+        }
+
+        if (secondInt != 0) {
+            System.out.print(secondInt + "/" + thirdInt);
+        }
+        System.out.println();
+    }
+
+
+    public static int input() {
+        while (scanner.hasNext()) {
+            if (scanner.hasNextInt())
+                return Math.abs(scanner.nextInt());
+            else {
+                String temp = scanner.next();
+                if (temp.equals("q")) {
+                    return -2;
+                } else {
+                    return -1;
+                }
+
+            }
+        }
+        return -1;
+    }
+}//class
